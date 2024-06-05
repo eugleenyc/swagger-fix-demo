@@ -1,73 +1,79 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+### Defect
+How to see the defect:
+- clone the repo
+- run `npm install`
+- run `npm start`
+- go to `http://localhost:3000/yaml`
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+The resulting yaml will show the following:
+```
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters:
+        - name: testHeader
+          required: true
+          in: header
+          description: test description
+          schema:
+            enum:
+              - an enum
+            type: string
+      responses:
+        '200':
+          description: ''
+info:
+  title: demo project
+  description: demo project description
+  version: '1.0'
+  contact: {}
+tags:
+  - name: demo
+    description: ''
+servers: []
+components:
+  schemas: {}
 ```
 
-## Running the app
+This is not correct as in the [controller](https://github.com/eugleenyc/swagger-fix-demo/blob/28d217d4170c01a9865f39b66a8163aed4086ef4/src/app.controller.ts#L16) it specifies a default value.
 
-```bash
-# development
-$ npm run start
+### Fix
+As outline in the repo [here](https://github.com/eugleenyc/swagger) for the potential swagger fix.
+If you include a spread operator in the code outlined [here](https://github.com/eugleenyc/swagger/blob/9fddb4bc75f3ba03d682ab185be9c32056b010a9/lib/decorators/api-property.decorator.ts#L28)
 
-# watch mode
-$ npm run start:dev
+![Screenshot 2024-06-05 at 8 31 43 AM](https://github.com/eugleenyc/swagger-fix-demo/assets/40117342/a98976a8-b5e9-4644-aa67-9a1c92f85a29)
 
-# production mode
-$ npm run start:prod
+It will now return the resulting correct yaml file:
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters:
+        - name: testHeader
+          required: true
+          in: header
+          description: test description
+          schema:
+            type: string
+            default: default param
+            enum:
+              - an enum
+      responses:
+        '200':
+          description: ''
+info:
+  title: demo project
+  description: demo project description
+  version: '1.0'
+  contact: {}
+tags:
+  - name: demo
+    description: ''
+servers: []
+components:
+  schemas: {}
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
